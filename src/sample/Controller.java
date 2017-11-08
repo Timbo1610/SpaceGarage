@@ -7,7 +7,10 @@ import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import sample.model.Node;
 import sample.physWorld.PhysWorld;
+import sample.physWorld.physObjects.ChildObject;
+import sample.physWorld.physObjects.PhysLink;
 import sample.physWorld.physObjects.PhysObject;
+import sample.physWorld.physObjects.RootObject;
 
 import java.util.ArrayList;
 
@@ -41,15 +44,48 @@ public class Controller {
         root.getChildren().add(gamefield);
 
 
+        RootObject rootObj = new RootObject(Settings.WINDOW_WIDTH/2,Settings.WINDOW_HEIGHT/2);
+        gamefield.getChildren().add(rootObj);
+        world.add(rootObj);
+
+        ChildObject childObj0 = new ChildObject();
+        ChildObject childObj1 = new ChildObject();
+        ChildObject childObj2 = new ChildObject();
+        ChildObject childObj3 = new ChildObject();
+        ChildObject childObj4 = new ChildObject();
+        ChildObject childObj5 = new ChildObject();
+        ChildObject childObj6 = new ChildObject();
+        ChildObject childObj7 = new ChildObject();
+
+        rootObj.addNeighbour(childObj0,0,20);
+        rootObj.addNeighbour(childObj1,1,20);
+        rootObj.addNeighbour(childObj2,2,20);
+        rootObj.addNeighbour(childObj3,3,20);
+        rootObj.addNeighbour(childObj4,4,20);
+        rootObj.addNeighbour(childObj5,5,20);
+        rootObj.addNeighbour(childObj6,6,20);
+        rootObj.addNeighbour(childObj7,7,20);
 
 
-        for(int i=0; i<10;i++)
-        {
-            PhysObject obj1 = new PhysObject(400,400);
-            gamefield.getChildren().add(obj1);
-            world.add(obj1);
-            obj1.accelerate(-5 + Math.random()*10,-5 + Math.random()*10);
-        }
+        gamefield.getChildren().add(childObj0);
+        world.add(childObj0);
+        gamefield.getChildren().add(childObj1);
+        world.add(childObj1);
+        gamefield.getChildren().add(childObj2);
+        world.add(childObj2);
+        gamefield.getChildren().add(childObj3);
+        world.add(childObj3);
+        gamefield.getChildren().add(childObj4);
+        world.add(childObj4);
+        gamefield.getChildren().add(childObj5);
+        world.add(childObj5);
+        gamefield.getChildren().add(childObj6);
+        world.add(childObj6);
+        gamefield.getChildren().add(childObj7);
+        world.add(childObj7);
+
+
+
 
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override

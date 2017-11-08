@@ -4,6 +4,7 @@ public class Vector {
     double[] origin = {0,0};
     double[] direction ={0,0};
 
+
     public Vector(){}
 
     public Vector(double x , double y){

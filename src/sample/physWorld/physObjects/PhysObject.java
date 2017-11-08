@@ -8,10 +8,18 @@ public class PhysObject extends Region{
 
     private Vector vector = new Vector();
     private Vector nextVector = new Vector();
-
+    private double rotation = 0;
     private int diameter = 10;
+    private double mass;
+    private double strength = 1;
+    RootObject rootObject;
 
-    Circle circle = new Circle(diameter);
+    //  3 | 2 | 1
+    //  4 | X | 0
+    //  5 | 6 | 7
+    private PhysLink[] links = new PhysLink[8];
+
+    private Circle circle = new Circle(diameter);
 
     public PhysObject()
     {
@@ -24,13 +32,71 @@ public class PhysObject extends Region{
 
         calcNextVector();
 
-        relocate(vector.getdX(), vector.getdY());
+        super.relocate(vector.getdX(), vector.getdY());
 
         getChildren().add(circle);
     }
 
+    public boolean addNeighbour(PhysObject childObj, int pos, double dist)
+    {
+        if(links[pos] == null)
+        {
+            PhysLink link = new PhysLink(this,childObj,dist);
+            links[pos] = link;
+            childObj.connectLink(link,(pos + 4) % 8);
+            childObj.setRootObject(getRootObject());
+
+            switch (pos)
+            {
+                case 0:
+                    childObj.relocate(vector.getX() + dist,vector.getY());
+                    break;
+                case 1:
+                    childObj.relocate(vector.getX() + dist,vector.getY()- dist);
+                    break;
+                case 2:
+                    childObj.relocate(vector.getX() ,vector.getY() -dist);
+                    break;
+                case 3:
+                    childObj.relocate(vector.getX() - dist,vector.getY() -dist);
+                    break;
+                case 4:
+                    childObj.relocate(vector.getX() - dist,vector.getY());
+                    break;
+                case 5:
+                    childObj.relocate(vector.getX() - dist,vector.getY() + dist);
+                    break;
+                case 6:
+                    childObj.relocate(vector.getX() ,vector.getY() + dist);
+                    break;
+                case 7:
+                    childObj.relocate(vector.getX() + dist,vector.getY() + dist);
+                    break;
+
+            }
+
+
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public boolean connectLink(PhysLink link, int pos)
+    {
+        if(links[pos] == null) {
+            links[pos] = link;
+            return true;
+        }
+        else
+            return false;
+    }
+
     @Override
     public void relocate(double x, double y) {
+        vector.setX(x);
+        vector.setY(y);
+        calcNextVector();
         super.relocate(x, y);
     }
 
@@ -99,5 +165,43 @@ public class PhysObject extends Region{
         this.nextVector = nextVector;
     }
 
+    public double getMass() {
+        return mass;
+    }
 
+    public void setMass(double mass) {
+        this.mass = mass;
+    }
+
+    public double getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(double rotation) {
+        this.rotation = rotation;
+    }
+
+    public double getStrength() {
+        return strength;
+    }
+
+    public void setStrength(double strength) {
+        this.strength = strength;
+    }
+
+    public RootObject getRootObject() {
+        return rootObject;
+    }
+
+    public void setRootObject(RootObject rootObject) {
+        this.rootObject = rootObject;
+    }
+
+    public PhysLink[] getLinks() {
+        return links;
+    }
+
+    public void setLinks(PhysLink[] links) {
+        this.links = links;
+    }
 }
