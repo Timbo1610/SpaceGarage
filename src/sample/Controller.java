@@ -1,24 +1,20 @@
 package sample;
 
 import javafx.animation.AnimationTimer;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import sample.model.AttachmentNode;
 import sample.model.Node;
-import sample.model.NodeType;
-import sample.model.StructuralNode;
-import sample.view.ComponentGrid.ComponentGrid;
+import sample.physWorld.PhysWorld;
+import sample.physWorld.physObjects.PhysObject;
 
 import java.util.ArrayList;
 
 public class Controller {
 
     private AnimationTimer gameTimer;
-    private Pane root , gamefieled;
+    private Pane root , gamefield;
 
     private boolean wKey;
     private boolean aKey;
@@ -29,127 +25,31 @@ public class Controller {
     Node currentNode, underlayingNode;
     boolean placeAllowed = false;
 
+    PhysWorld world = new PhysWorld();
+
+
+
+
+
 
     public Controller(Pane root, Scene scene)
     {
         this.root = root;
-        gamefieled = new Pane();
-        gamefieled.setPrefWidth(Settings.FIELD_WIDTH);
-        gamefieled.setPrefHeight(Settings.FIELD_HEIGHT);
-
-        root.getChildren().add(gamefieled);
-
-
-        ComponentGrid compGrid = new ComponentGrid();
-        compGrid.relocate(30,30);
-        root.getChildren().add(compGrid);
-
-        /*
-        scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
-                if(nodes.contains(event.getTarget()))
-                {
-                    System.out.println(event.getTarget().toString() + " already exists");
-                }
-                else if(event.getTarget().equals(root) && false)
-                {
-                    System.out.println(event.getTarget().toString() + " does not exist");
-                    StructuralNode node = new StructuralNode((int)(event.getX()-root.getLayoutX()),(int)(event.getY()-root.getLayoutY()), NodeType.STRUCTURE);
-                    nodes.add(node);
-                    System.out.println(node.toString() + " added");
-                    gamefieled.getChildren().add(node);
-                }
-            }
-        });
-        */
-
-        compGrid.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if(currentNode == null)
-                {
-
-                    Node node = new Node((int) (event.getX()), (int) (event.getY()));
-                    node.setType(compGrid.getCurrentNode().getType());
-                    node.toFront();
-                    node.setMouseTransparent(true);
-                    System.out.println(node.toString() + " added");
-                    root.getChildren().add(node);
-                    currentNode = node;
-
-                }
-                else
-                {
-                    currentNode.setType(compGrid.getCurrentNode().getType());
-                }
-            }
-        });
-
-        scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if(currentNode != null) {
-                    currentNode.relocate((int)(event.getX()),(int)(event.getY()));
-                }
-            }
-        });
-
-        gamefieled.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println(event.getTarget());
-                if(nodes.contains(event.getTarget()))
-                {
-                    System.out.println("recognized");
-                }
-
-                if(event.getTarget().getClass().equals(AttachmentNode.class))
-                {
-                    placeAllowed = true;
-                    underlayingNode = (AttachmentNode)event.getTarget();
-                    underlayingNode.toFront();
-                    System.out.println("allowed");
-
-                }
-                else {
-                    placeAllowed = false;
-                    System.out.println("not allowed");
-                }
-
-            }
-        });
+        gamefield = new Pane();
+        gamefield.setPrefWidth(Settings.FIELD_WIDTH);
+        gamefield.setPrefHeight(Settings.FIELD_HEIGHT);
+        root.getChildren().add(gamefield);
 
 
-        //Place Node
-        gamefieled.setOnMouseReleased(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if(currentNode != null && placeAllowed && underlayingNode != null) {
-                    StructuralNode node = new StructuralNode(0,0, compGrid.getCurrentNode().getType());
-                    System.out.println(node.toString() + " added@ " + (int)node.getVector().getX()+ " " + (int)node.getVector().getY());
-                    node.relocate(underlayingNode.getVector().getX(),underlayingNode.getVector().getY());
-
-                    underlayingNode.replaceNode(node);
-                    node.toBack();
-
-                    node.getParentNode().getVector().setdX(1);
-                    node.getParentNode().getVector().setdY(3);
 
 
-                }
-                else if(currentNode != null && event.getButton().equals(MouseButton.SECONDARY)) {
-                    StructuralNode node = new StructuralNode((int) (event.getX()), (int) (event.getY()), compGrid.getCurrentNode().getType());
-
-                    System.out.println(node.toString() + " added");
-                    gamefieled.getChildren().add(node);
-                    nodes.add(node);
-                    node.setIsParent(true);
-
-                }
-            }
-        });
-
-
+        for(int i=0; i<10;i++)
+        {
+            PhysObject obj1 = new PhysObject(400,400);
+            gamefield.getChildren().add(obj1);
+            world.add(obj1);
+            obj1.accelerate(-5 + Math.random()*10,-5 + Math.random()*10);
+        }
 
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -184,21 +84,15 @@ public class Controller {
             public void handle(long now) {
 
                 if(wKey)
-                    gamefieled.relocate(gamefieled.getLayoutX(),gamefieled.getLayoutY()+5);
+                    gamefield.relocate(gamefield.getLayoutX(), gamefield.getLayoutY()+5);
                 if(aKey)
-                    gamefieled.relocate(gamefieled.getLayoutX() +5,gamefieled.getLayoutY());
+                    gamefield.relocate(gamefield.getLayoutX() +5, gamefield.getLayoutY());
                 if(sKey)
-                    gamefieled.relocate(gamefieled.getLayoutX(),gamefieled.getLayoutY()-5);
+                    gamefield.relocate(gamefield.getLayoutX(), gamefield.getLayoutY()-5);
                 if(dKey)
-                    gamefieled.relocate(gamefieled.getLayoutX()-5,gamefieled.getLayoutY());
+                    gamefield.relocate(gamefield.getLayoutX()-5, gamefield.getLayoutY());
 
-                // TODO create collision detection
-                for(Node node: nodes)
-                {
-
-                    node.updateLocationWithoutCollision();
-                }
-
+                world.update();
             }
 
 

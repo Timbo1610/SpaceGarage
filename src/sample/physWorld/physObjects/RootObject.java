@@ -6,9 +6,5 @@ public class RootObject extends PhysObject {
 
     ArrayList<ChildObject> children = new ArrayList<>();
 
-    public RootObject()
-    {
-
-    }
 
 }

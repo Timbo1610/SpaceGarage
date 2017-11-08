@@ -24,7 +24,7 @@ public class CollisionDetecter {
             for(PhysObject object2: physObjects)
             {
                 //if(object1.distanceToNode(object2) <= PhysSettings.PHYS_COLLSION_DETECTION_MAX_RADIUS)
-                if(object1.willCollide(object2))
+                if(!object1.equals(object2) && object1.willCollide(object2))
                 {
                     System.out.println(object1.toString() + " will collide with " + object2.toString());
                     collidingObjects.add(object1);
@@ -38,14 +38,14 @@ public class CollisionDetecter {
     {
         for(PhysObject object: physObjects)
         {
-            if(object.getNextVector().getX() > PhysSettings.PHYS_WORLD_WIDTH ||
-                    object.getNextVector().getY() > PhysSettings.PHYS_WORLD_HEIGHT ||
-                    object.getNextVector().getX() < 0 ||
-                    object.getNextVector().getY() < 0
+            if(object.getNextVector().getX()+object.getDiameter()/2 > PhysSettings.PHYS_WORLD_WIDTH ||
+                    object.getNextVector().getY()+ object.getDiameter()/2 > PhysSettings.PHYS_WORLD_HEIGHT ||
+                    object.getNextVector().getX()- object.getDiameter()/2 < 0 ||
+                    object.getNextVector().getY()- object.getDiameter()/2 < 0
                     )
             {
-                object.getCurrentVector().setdX(0);
-                object.getCurrentVector().setdY(0);
+                object.getVector().setdX(0);
+                object.getVector().setdY(0);
             }
         }
 

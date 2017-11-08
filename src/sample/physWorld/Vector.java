@@ -22,7 +22,7 @@ public class Vector {
     public void moveBy(double x, double y)
     {
         setX(getX() + x);
-        setY(getX() + y);
+        setY(getY() + y);
     }
 
     public double distanceToVector( Vector vector)

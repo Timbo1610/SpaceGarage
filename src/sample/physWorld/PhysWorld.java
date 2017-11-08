@@ -14,33 +14,44 @@ public class PhysWorld {
     Vector gravity;
 
     private ArrayList<ForceField> forceFields = new ArrayList<>();
-    private ArrayList<PhysObject> objects = new ArrayList<>();
+    private ArrayList<PhysObject> physObjects = new ArrayList<>();
 
-    CollisionDetecter cd = new CollisionDetecter(objects);
+    CollisionDetecter cd = new CollisionDetecter(physObjects);
 
-    public PhysWorld(int width, int height) {
-        this.width = width;
-        this.height = height;
-
+    public PhysWorld() {
+        width = PhysSettings.PHYS_WORLD_WIDTH;
+        height= PhysSettings.PHYS_WORLD_HEIGHT;
     }
 
     public void update()
     {
+
         cd.detectCollisions();
+        cd.detectCollsionsWithBoundry();
+        for(PhysObject physObj: physObjects)
+        {
+            physObj.updateVector();
+        }
     }
 
-    public void addPhysObject(PhysObject object)
+    public void add(PhysObject object)
     {
-        objects.add(object);
+        physObjects.add(object);
+    }
+
+    public void addAll(PhysObject ... objects)
+    {
+        for(PhysObject obj: objects)
+            physObjects.add(obj);
     }
 
 
-    public ArrayList<PhysObject> getObjects() {
-        return objects;
+    public ArrayList<PhysObject> getPhysObjects() {
+        return physObjects;
     }
 
-    public void setObjects(ArrayList<PhysObject> objects) {
-        this.objects = objects;
+    public void setPhysObjects(ArrayList<PhysObject> physObjects) {
+        this.physObjects = physObjects;
     }
 
 
