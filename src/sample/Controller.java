@@ -24,11 +24,11 @@ public class Controller {
     private boolean sKey;
     private boolean dKey;
 
-    ArrayList<Node> nodes = new ArrayList<Node>();
-    Node currentNode, underlayingNode;
-    boolean placeAllowed = false;
+    private ArrayList<Node> nodes = new ArrayList<>();
+    private Node currentNode, underlayingNode;
+    private boolean placeAllowed = false;
 
-    PhysWorld world = new PhysWorld();
+    private PhysWorld world = new PhysWorld();
 
 
 
@@ -58,13 +58,15 @@ public class Controller {
         ChildObject childObj7 = new ChildObject();
 
         rootObj.addNeighbour(childObj0,0,20);
-        rootObj.addNeighbour(childObj1,1,20);
-        rootObj.addNeighbour(childObj2,2,20);
-        rootObj.addNeighbour(childObj3,3,20);
+        childObj0.addNeighbour(childObj1,0,20);
+        childObj1.addNeighbour(childObj2,0,20);
+        childObj2.addNeighbour(childObj3,0,20);
+
+
         rootObj.addNeighbour(childObj4,4,20);
-        rootObj.addNeighbour(childObj5,5,20);
-        rootObj.addNeighbour(childObj6,6,20);
-        rootObj.addNeighbour(childObj7,7,20);
+        childObj4.addNeighbour(childObj5,4,20);
+        childObj5.addNeighbour(childObj6,4,20);
+        childObj6.addNeighbour(childObj7,6,20);
 
 
         gamefield.getChildren().add(childObj0);
