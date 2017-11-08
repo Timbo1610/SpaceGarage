@@ -62,6 +62,7 @@ public class Controller {
             }
         });
         */
+
         compGrid.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -73,7 +74,7 @@ public class Controller {
                     node.toFront();
                     node.setMouseTransparent(true);
                     System.out.println(node.toString() + " added");
-                    gamefieled.getChildren().add(node);
+                    root.getChildren().add(node);
                     currentNode = node;
 
                 }
@@ -88,7 +89,7 @@ public class Controller {
             @Override
             public void handle(MouseEvent event) {
                 if(currentNode != null) {
-                    currentNode.relocate((int)(event.getX()-gamefieled.getLayoutX()),(int)(event.getY()-gamefieled.getLayoutY()));
+                    currentNode.relocate((int)(event.getX()),(int)(event.getY()));
                 }
             }
         });
@@ -106,7 +107,9 @@ public class Controller {
                 {
                     placeAllowed = true;
                     underlayingNode = (AttachmentNode)event.getTarget();
+                    underlayingNode.toFront();
                     System.out.println("allowed");
+
                 }
                 else {
                     placeAllowed = false;
@@ -129,6 +132,8 @@ public class Controller {
                     underlayingNode.replaceNode(node);
                     node.toBack();
 
+                    node.getParentNode().getVector().setdX(1);
+                    node.getParentNode().getVector().setdY(3);
 
 
                 }
@@ -187,6 +192,13 @@ public class Controller {
                 if(dKey)
                     gamefieled.relocate(gamefieled.getLayoutX()-5,gamefieled.getLayoutY());
 
+                // TODO create collision detection
+                for(Node node: nodes)
+                {
+
+                    node.updateLocationWithoutCollision();
+                }
+
             }
 
 
@@ -197,15 +209,4 @@ public class Controller {
 
     }
 
-
-
-    public void detectConnections()
-    {
-        for(Node node1: nodes){
-            for(Node node2: nodes){
-                //if()
-            }
-        }
-
-    }
 }

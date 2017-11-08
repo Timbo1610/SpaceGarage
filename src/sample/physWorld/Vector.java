@@ -1,8 +1,8 @@
-package sample.model;
+package sample.physWorld;
 
 public class Vector {
-    double[] origin = new double[2];
-    double[] direction = new double[2];
+    double[] origin = {0,0};
+    double[] direction ={0,0};
 
     public Vector(){}
 
@@ -17,6 +17,22 @@ public class Vector {
 
         direction[0] = dx;
         direction[1] = dy;
+    }
+
+    public void moveBy(double x, double y)
+    {
+        setX(getX() + x);
+        setY(getX() + y);
+    }
+
+    public double distanceToVector( Vector vector)
+    {
+        double dx = getX()-vector.getX();
+        double dy = getY()-vector.getY();
+
+        double distance = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
+
+        return  distance;
     }
 
     public void setX(double x)

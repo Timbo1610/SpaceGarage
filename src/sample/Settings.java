@@ -12,6 +12,8 @@ public class Settings {
     public static int WINDOW_HEIGHT = 720;
 
     public static int GAMEFIELD_GRID_WIDTH = 50;
+    public static int EDITOR_SNAP_DISTANCE = 10;
+
 
     public static int GRID_COMPONENT_WIDTH = 90;
     public static int GRID_COMPONENT_PADDING = 10;

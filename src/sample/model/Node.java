@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import sample.Settings;
+import sample.physWorld.Vector;
 
 import java.util.ArrayList;
 
@@ -56,6 +57,27 @@ public class Node extends Region {
         vector.setX(x);
         vector.setY(y);
         super.relocate(x, y);
+    }
+
+    public void moveBy(double x, double y)
+    {
+        relocate(vector.getX()+x,vector.getY()+y);
+    }
+
+    public void updateLocationWithoutCollision()
+    {
+        moveBy(vector.getdX(),vector.getdY());
+    }
+
+
+    public double distanceToNode(Node node)
+    {
+        double dx = vector.getX()-node.getVector().getX();
+        double dy = vector.getY()-node.getVector().getY();
+
+        double distance = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
+
+        return  distance;
     }
 
     public void redraw()
