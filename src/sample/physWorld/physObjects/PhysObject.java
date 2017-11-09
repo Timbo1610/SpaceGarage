@@ -2,6 +2,7 @@ package sample.physWorld.physObjects;
 
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Circle;
+import sample.physWorld.PID;
 import sample.physWorld.Vector;
 
 public class PhysObject extends Region{
@@ -10,8 +11,21 @@ public class PhysObject extends Region{
     private Vector nextVector = new Vector();
     private double rotation = 0;
     private int diameter = 10;
-    private double mass;
+    private double mass = 100;
     private double strength = 1;
+    private double stiffness = 10;
+    private double dampening = 10;
+    private double oldDX = 0;
+    private double oldDY = 0;
+    private double oldvelDX = 0;
+    private double oldvelDY = 0;
+
+    private double maxForce = 1;
+
+
+    PID pid = new PID(0.1, 0.001, 0.2);
+
+
     RootObject rootObject;
 
     //  3 | 2 | 1
@@ -27,6 +41,9 @@ public class PhysObject extends Region{
     }
     public PhysObject(int x ,int y)
     {
+        pid.setOutputLimits(1);
+
+
         vector.setX(x);
         vector.setY(y);
 
@@ -41,40 +58,21 @@ public class PhysObject extends Region{
     {
         if(links[pos] == null)
         {
-            PhysLink link = new PhysLink(this,childObj,dist);
-            links[pos] = link;
-            childObj.connectLink(link,(pos + 4) % 8);
+            double angle = 360/8 * pos;
+
+            PhysLink link = new PhysLink(this,dist,angle);
+            PhysLink link2 = new PhysLink(childObj,dist,angle+180);
+
+            link.setTo(link2);
+            link2.setTo(link);
+
+            connectLink(link,pos);
+
+            childObj.connectLink(link2,(pos + 4) % 8);
+
             childObj.setRootObject(getRootObject());
 
-            switch (pos)
-            {
-                case 0:
-                    childObj.relocate(vector.getX() + dist,vector.getY());
-                    break;
-                case 1:
-                    childObj.relocate(vector.getX() + dist,vector.getY()- dist);
-                    break;
-                case 2:
-                    childObj.relocate(vector.getX() ,vector.getY() -dist);
-                    break;
-                case 3:
-                    childObj.relocate(vector.getX() - dist,vector.getY() -dist);
-                    break;
-                case 4:
-                    childObj.relocate(vector.getX() - dist,vector.getY());
-                    break;
-                case 5:
-                    childObj.relocate(vector.getX() - dist,vector.getY() + dist);
-                    break;
-                case 6:
-                    childObj.relocate(vector.getX() ,vector.getY() + dist);
-                    break;
-                case 7:
-                    childObj.relocate(vector.getX() + dist,vector.getY() + dist);
-                    break;
-
-            }
-
+            childObj.relocate(vector.getX() + Math.cos(Math.toRadians(angle)) * dist,vector.getY() -  Math.sin(Math.toRadians(angle)) * dist);
 
             return true;
         }
@@ -114,11 +112,106 @@ public class PhysObject extends Region{
             return otherObject.getNextVector().distanceToVector(nextVector) < otherObject.diameter + diameter;
     }
 
-    public void updateVector()
+    private void updateVector()
     {
         vector.moveBy(vector.getdX(), vector.getdY());
         calcNextVector();
         relocate(vector.getX(), vector.getY());
+    }
+
+    private void updateLinks()
+    {
+        for(PhysLink link: links)
+        {
+            if(link != null)
+            {
+                PhysObject otherNode = link.getTo().getObj();
+                double dx = vector.getX()-otherNode.getVector().getX() + Math.cos(Math.toRadians(link.getAngle())) * link.getDistance()*2;
+                double dy = vector.getY()-otherNode.getVector().getY() + Math.sin(Math.toRadians(link.getAngle())) * link.getDistance()*2;
+
+                double dvelX = vector.getdX() - otherNode.getVector().getdX();
+                double dvelY = vector.getdY() - otherNode.getVector().getdY();
+
+                if(Math.abs(dvelX) > Math.abs(oldvelDX))
+                    accelerate(dvelX /stiffness,0);
+
+                if(Math.abs(dvelY) > Math.abs(oldvelDY))
+                    accelerate(0,dvelY /stiffness);
+
+
+
+
+                vector.setdX(vector.getdX() - dvelX);
+                vector.setdY(vector.getdY() - dvelY);
+
+
+
+
+
+
+
+
+                //if(this.getClass().equals(ChildObject.class))
+                   // accelerate(link.getForceX()/ mass,link.getForceY() / mass);
+
+                //link.setForceX(stiffness * - dx);
+                //link.setForceY(stiffness * - dy);
+
+                //link.addForceX(-Math.pow(dvelX,3) - stiffness * dx);
+                //link.addForceY(-Math.pow(dvelY,3) - stiffness * dy);
+
+                //if(Math.abs(dx) < deadzone)
+                 //   link.setForceX(0);
+                //if(Math.abs(dx) < deadzone)
+                //    link.setForceY(0);
+
+
+                //
+                //{
+                    //v(pid.getOutput(dx, Math.cos(Math.toRadians(link.getAngle())) * link.getDistance()*2)/mass,
+                     //       pid.getOutput(dy, Math.sin(Math.toRadians(link.getAngle())) * link.getDistance()*2)/mass);
+                //}
+
+
+                oldDX = dx;
+                oldDY = dy;
+                oldvelDX = dvelX;
+                oldvelDY = dvelY;
+
+
+
+                //System.out.println(toString() + "  dx: " + dx + " dy: " + dy + " Fx: " +  link.getForceX() + " Fy: " +  link.getForceY());
+
+                link.setForceX(link.getForceX() / dampening);
+                link.setForceY(link.getForceY() / dampening);
+
+
+
+
+
+            }
+        }
+    }
+
+    private void applyForce()
+    {
+        for(PhysLink link: links)
+        {
+            if(link != null)
+            {
+
+            }
+        }
+
+    }
+
+    public void update()
+    {
+
+        updateLinks();
+        applyForce();
+        updateVector();
+
     }
 
 
@@ -203,5 +296,13 @@ public class PhysObject extends Region{
 
     public void setLinks(PhysLink[] links) {
         this.links = links;
+    }
+
+    public double getStiffness() {
+        return stiffness;
+    }
+
+    public void setStiffness(double stiffness) {
+        this.stiffness = stiffness;
     }
 }

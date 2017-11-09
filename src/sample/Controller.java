@@ -8,8 +8,6 @@ import javafx.scene.layout.Pane;
 import sample.model.Node;
 import sample.physWorld.PhysWorld;
 import sample.physWorld.physObjects.ChildObject;
-import sample.physWorld.physObjects.PhysLink;
-import sample.physWorld.physObjects.PhysObject;
 import sample.physWorld.physObjects.RootObject;
 
 import java.util.ArrayList;
@@ -23,6 +21,8 @@ public class Controller {
     private boolean aKey;
     private boolean sKey;
     private boolean dKey;
+
+    private boolean down = true;
 
     private ArrayList<Node> nodes = new ArrayList<>();
     private Node currentNode, underlayingNode;
@@ -44,35 +44,45 @@ public class Controller {
         root.getChildren().add(gamefield);
 
 
-        RootObject rootObj = new RootObject(Settings.WINDOW_WIDTH/2,Settings.WINDOW_HEIGHT/2);
+        RootObject rootObj = new RootObject(Settings.WINDOW_WIDTH/2,350);
         gamefield.getChildren().add(rootObj);
         world.add(rootObj);
 
         ChildObject childObj0 = new ChildObject();
         ChildObject childObj1 = new ChildObject();
+
+        childObj1.getVector().setdX(10);
+       /*
         ChildObject childObj2 = new ChildObject();
         ChildObject childObj3 = new ChildObject();
         ChildObject childObj4 = new ChildObject();
         ChildObject childObj5 = new ChildObject();
         ChildObject childObj6 = new ChildObject();
         ChildObject childObj7 = new ChildObject();
-
+*/
         rootObj.addNeighbour(childObj0,0,20);
-        childObj0.addNeighbour(childObj1,0,20);
+
+        childObj0.addNeighbour(childObj1,2,20);
+        /*
+
         childObj1.addNeighbour(childObj2,0,20);
-        childObj2.addNeighbour(childObj3,0,20);
+        childObj2.addNeighbour(childObj3,1,20);
 
 
         rootObj.addNeighbour(childObj4,4,20);
         childObj4.addNeighbour(childObj5,4,20);
         childObj5.addNeighbour(childObj6,4,20);
         childObj6.addNeighbour(childObj7,6,20);
-
+*/
 
         gamefield.getChildren().add(childObj0);
         world.add(childObj0);
+
         gamefield.getChildren().add(childObj1);
         world.add(childObj1);
+        rootObj.accelerate(0,50);
+        /*
+
         gamefield.getChildren().add(childObj2);
         world.add(childObj2);
         gamefield.getChildren().add(childObj3);
@@ -86,7 +96,7 @@ public class Controller {
         gamefield.getChildren().add(childObj7);
         world.add(childObj7);
 
-
+*/
 
 
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -131,6 +141,13 @@ public class Controller {
                     gamefield.relocate(gamefield.getLayoutX()-5, gamefield.getLayoutY());
 
                 world.update();
+
+
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
 

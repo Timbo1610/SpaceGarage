@@ -1,34 +1,46 @@
 package sample.physWorld.physObjects;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+
 
 public class PhysLink {
-    PhysObject from,to;
-    double torsion  = 0;
-    double force = 0;
-    double distance;
+    private PhysObject obj;
+    private PhysLink to;
+    private double torsion  = 0;
+    private double forceX = 0;
+    private double forceY = 0;
+    private double distance;
+    private double angle;
 
-    public PhysLink(PhysObject from, PhysObject to, double distance )
+    public PhysLink(PhysObject obj, double distance , double angle)
     {
-        this.from = from;
-        this.to = to;
+        this.obj = obj;
         this.distance = distance;
+        this.angle = angle;
     }
 
-    public PhysObject getFrom() {
-        return from;
+    public void addForceX(double forceX)
+    {
+        this.forceX += forceX;
     }
 
-    public void setFrom(PhysObject from) {
-        this.from = from;
+    public void addForceY(double forceY)
+    {
+        this.forceY += forceY;
     }
 
-    public PhysObject getTo() {
+    public PhysObject getObj() {
+        return obj;
+    }
+
+    public void setObj(PhysObject obj) {
+        this.obj = obj;
+    }
+
+    public PhysLink getTo() {
         return to;
     }
 
-    public void setTo(PhysObject to) {
+    public void setTo(PhysLink to) {
         this.to = to;
     }
 
@@ -40,11 +52,35 @@ public class PhysLink {
         this.torsion = torsion;
     }
 
-    public double getForce() {
-        return force;
+    public double getForceX() {
+        return forceX;
     }
 
-    public void setForce(double force) {
-        this.force = force;
+    public void setForceX(double forceX) {
+        this.forceX = forceX;
+    }
+
+    public double getForceY() {
+        return forceY;
+    }
+
+    public void setForceY(double forceY) {
+        this.forceY = forceY;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public double getAngle() {
+        return angle;
+    }
+
+    public void setAngle(double angle) {
+        this.angle = angle;
     }
 }

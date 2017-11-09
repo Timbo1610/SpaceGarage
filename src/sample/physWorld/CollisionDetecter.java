@@ -43,8 +43,8 @@ public class CollisionDetecter {
                     object.getNextVector().getX()- object.getDiameter()/2 < 0 ||
                     object.getNextVector().getY()- object.getDiameter()/2 < 0 )
             {
-                object.getVector().setdX(0);
-                object.getVector().setdY(0);
+                object.getVector().setdX(-object.getVector().getdX());
+                object.getVector().setdY(-object.getVector().getdY());
             }
         }
 

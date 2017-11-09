@@ -30,7 +30,7 @@ public class PhysWorld {
         cd.detectCollsionsWithBoundry();
         for(PhysObject physObj: physObjects)
         {
-            physObj.updateVector();
+            physObj.update();
         }
     }
 
