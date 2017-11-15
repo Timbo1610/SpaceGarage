@@ -13,8 +13,8 @@ public class Vector {
 
     public Vector addVector(Vector vector)
     {
-        x = vector.getX();
-        y = vector.getY();
+        x += vector.getX();
+        y += vector.getY();
 
         return this;
     }

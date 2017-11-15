@@ -23,8 +23,6 @@ public class Node extends Region {
     public Node(int x, int y)
     {
 
-        kinematic.getOrigin().
-        kinematic.setY(y);
         super.relocate(x, y);
         redraw();
     }
@@ -54,31 +52,31 @@ public class Node extends Region {
 
     @Override
     public void relocate(double x, double y) {
-        kinematic.setX(x);
-        kinematic.setY(y);
+        //kinematic.setX(x);
+       // kinematic.setY(y);
         super.relocate(x, y);
     }
 
-    public void moveBy(double x, double y)
-    {
-        relocate(kinematic.getX()+x, kinematic.getY()+y);
-    }
+    //public void moveBy(double x, double y)
+    //{
+   //     relocate(kinematic.getX()+x, kinematic.getY()+y);
+   // }
 
-    public void updateLocationWithoutCollision()
-    {
-        moveBy(kinematic.getdX(), kinematic.getdY());
-    }
+   // public void updateLocationWithoutCollision()
+   // {
+   //     moveBy(kinematic.getdX(), kinematic.getdY());
+   // }
 
 
-    public double distanceToNode(Node node)
-    {
-        double dx = kinematic.getX()-node.getKinematic().getX();
-        double dy = kinematic.getY()-node.getKinematic().getY();
+   // public double distanceToNode(Node node)
+   // {
+      //  double dx = kinematic.getX()-node.getKinematic().getX();
+       // double dy = kinematic.getY()-node.getKinematic().getY();
 
-        double distance = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
+        //double distance = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
 
-        return  distance;
-    }
+       // return  distance;
+   // }
 
     public void redraw()
     {

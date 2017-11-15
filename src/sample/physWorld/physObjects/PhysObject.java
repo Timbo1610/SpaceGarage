@@ -1,7 +1,10 @@
 package sample.physWorld.physObjects;
 
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Rotate;
 import sample.physWorld.Kinematic;
 import sample.physWorld.PID;
 import sample.physWorld.Vector;
@@ -12,9 +15,9 @@ public class PhysObject extends Region{
 
     private Kinematic kinematic = new Kinematic();
     private Kinematic nextKinematic = new Kinematic();
-    private double rotation = 0;
-    private int diameter = 10;
-    private double mass = 100;
+
+    private int diameter = 20;
+    private double mass = 10;
     private double strength = 1;
     private double stiffness = 10;
     private double dampening = 10;
@@ -25,18 +28,13 @@ public class PhysObject extends Region{
 
     private double maxForce = 1;
 
-
-    PID pid = new PID(0.1, 0.001, 0.2);
-
-
     RootObject rootObject;
 
-    //  3 | 2 | 1
-    //  4 | X | 0
-    //  5 | 6 | 7
-    private ArrayList<PhysLink> links = new ArrayList<>();
+    private ArrayList<PhysObject> neighbours = new ArrayList<>();
 
-    private Circle circle = new Circle(diameter);
+    private Circle circle = new Circle(diameter/2);
+    private Rectangle rect = new Rectangle(-5,-5,10,10);
+    Rotate rot = new Rotate(kinematic.getRotation(), 0, 0);
 
     public PhysObject()
     {
@@ -44,24 +42,21 @@ public class PhysObject extends Region{
     }
     public PhysObject(int x ,int y)
     {
-        pid.setOutputLimits(1);
-
-
-        calcNextVector();
-        kinematic.getOrigin().setX(x);
-        kinematic.getOrigin().setY(y);
-
-        super.relocate(x,y);
-
-        getChildren().add(circle);
+        relocate(x,y);
+        rect.setFill(Color.BLUE);
+        getChildren().addAll(circle,rect);
+        getTransforms().add(rot);
     }
 
     //    090°
     //180°    009°
     //    270°
-    public boolean addNeighbour(PhysObject childObj, int degree, double dist)
+    public boolean addNeighbour(PhysObject childObj, Vector position)
     {
-        //ToDo implement addNeighbour
+        childObj.relocate(getKinematic().getOrigin().clone().addVector(position));
+        childObj.setRootObject(rootObject);
+
+        System.out.println(childObj.toString() + " relocate to: X:" + childObj.getKinematic().getOrigin().getX() + " Y:" + childObj.getKinematic().getOrigin().getY());
         return true;
     }
 
@@ -69,8 +64,21 @@ public class PhysObject extends Region{
     public void relocate(double x, double y) {
         kinematic.getOrigin().setX(x);
         kinematic.getOrigin().setY(y);
+
+        System.out.println(this.toString() + " relocate to: X:" + getKinematic().getOrigin().getX() + " Y:" + getKinematic().getOrigin().getY());
+        rot.setAngle(kinematic.getRotation());
+
         calcNextVector();
         super.relocate(x, y);
+    }
+
+    public void relocate(Vector vector) {
+        kinematic.setOrigin(vector);
+        calcNextVector();
+        rot.setAngle(kinematic.getRotation());
+        //System.out.println(this.toString() + " Neighbour add at: X:" + childObj.getKinematic().getOrigin().getX() + " Y:" + childObj.getKinematic().getOrigin().getY());
+        super.relocate(vector.getX(), vector.getY());
+
     }
 
     public double distanceToNode(PhysObject object)
@@ -85,54 +93,20 @@ public class PhysObject extends Region{
     private void updateVector()
     {
         kinematic.moveBy(kinematic.getSpeed());
-        calcNextVector();
-        relocate(kinematic.getSpeed().getX(), kinematic.getSpeed().getY());
-    }
-
-    private void updateLinks()
-    {
-        for(PhysLink link: links)
-        {
-            if(link != null)
-            {
-                PhysObject otherNode = link.getTo().getObj();
-               // double dx = kinematic.getX()-otherNode.getKinematic().getX() + Math.cos(Math.toRadians(link.getAngle())) * link.getDistance()*2;
-               // double dy = kinematic.getY()-otherNode.getKinematic().getY() + Math.sin(Math.toRadians(link.getAngle())) * link.getDistance()*2;
-
-               // double dvelX = kinematic.getdX() - otherNode.getKinematic().getdX();
-               // double dvelY = kinematic.getdY() - otherNode.getKinematic().getdY();
-
-            }
-        }
-    }
-
-    private void applyForce()
-    {
-        for(PhysLink link: links)
-        {
-            if(link != null)
-            {
-
-            }
-        }
-
+        kinematic.rotateBy(kinematic.getRadialSpeed());
+        relocate(kinematic.getOrigin().getX(), kinematic.getOrigin().getY());
     }
 
     public void update()
     {
-
-        updateLinks();
-        applyForce();
         updateVector();
-
     }
 
 
     public void calcNextVector()
     {
-
-        nextKinematic.getOrigin().setX(kinematic.getOrigin().getX() + kinematic.getSpeed().getX());
-        nextKinematic.getOrigin().setY(kinematic.getOrigin().getY() + kinematic.getSpeed().getY());
+        nextKinematic.setOrigin(kinematic.getOrigin().clone().addVector(kinematic.getSpeed()));
+        nextKinematic.setRotation(kinematic.getRotation()+ kinematic.getRadialSpeed());
     }
 
     public void applyForce(Vector force)
@@ -178,14 +152,6 @@ public class PhysObject extends Region{
         this.mass = mass;
     }
 
-    public double getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(double rotation) {
-        this.rotation = rotation;
-    }
-
     public double getStrength() {
         return strength;
     }
@@ -200,14 +166,6 @@ public class PhysObject extends Region{
 
     public void setRootObject(RootObject rootObject) {
         this.rootObject = rootObject;
-    }
-
-    public ArrayList<PhysLink> getLinks() {
-        return links;
-    }
-
-    public void setLinks(ArrayList<PhysLink> links) {
-        this.links = links;
     }
 
     public double getStiffness() {

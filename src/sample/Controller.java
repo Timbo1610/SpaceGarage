@@ -7,6 +7,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import sample.model.Node;
 import sample.physWorld.PhysWorld;
+import sample.physWorld.Vector;
 import sample.physWorld.physObjects.ChildObject;
 import sample.physWorld.physObjects.RootObject;
 
@@ -50,6 +51,8 @@ public class Controller {
 
         ChildObject childObj0 = new ChildObject();
         ChildObject childObj1 = new ChildObject();
+        ChildObject childObj2 = new ChildObject();
+        ChildObject childObj3 = new ChildObject();
 
         //childObj1.getKinematic().setdX(10);
        /*
@@ -60,9 +63,11 @@ public class Controller {
         ChildObject childObj6 = new ChildObject();
         ChildObject childObj7 = new ChildObject();
 */
-        rootObj.addNeighbour(childObj0,0,20);
-
-        childObj0.addNeighbour(childObj1,270,20);
+        rootObj.addNeighbour(childObj0,new Vector(20,0));
+        rootObj.getKinematic().setRadialSpeed(2);
+        //childObj0.addNeighbour(childObj1,new Vector(20,0));
+       // childObj1.addNeighbour(childObj2,new Vector(0,20));
+       // childObj2.addNeighbour(childObj3,new Vector(0,20));
         /*
 
         childObj1.addNeighbour(childObj2,0,20);
@@ -78,15 +83,18 @@ public class Controller {
         gamefield.getChildren().add(childObj0);
         world.add(childObj0);
 
-        gamefield.getChildren().add(childObj1);
-        world.add(childObj1);
+       // gamefield.getChildren().add(childObj1);
+       // world.add(childObj1);
+
+       // gamefield.getChildren().add(childObj2);
+       // world.add(childObj2);
+
+       // gamefield.getChildren().add(childObj3);
+       // world.add(childObj3);
         //rootObj.accelerate(0,50);
         /*
 
-        gamefield.getChildren().add(childObj2);
-        world.add(childObj2);
-        gamefield.getChildren().add(childObj3);
-        world.add(childObj3);
+
         gamefield.getChildren().add(childObj4);
         world.add(childObj4);
         gamefield.getChildren().add(childObj5);
