@@ -51,7 +51,7 @@ public class Controller {
         ChildObject childObj0 = new ChildObject();
         ChildObject childObj1 = new ChildObject();
 
-        childObj1.getVector().setdX(10);
+        //childObj1.getKinematic().setdX(10);
        /*
         ChildObject childObj2 = new ChildObject();
         ChildObject childObj3 = new ChildObject();
@@ -62,7 +62,7 @@ public class Controller {
 */
         rootObj.addNeighbour(childObj0,0,20);
 
-        childObj0.addNeighbour(childObj1,2,20);
+        childObj0.addNeighbour(childObj1,270,20);
         /*
 
         childObj1.addNeighbour(childObj2,0,20);
@@ -80,7 +80,7 @@ public class Controller {
 
         gamefield.getChildren().add(childObj1);
         world.add(childObj1);
-        rootObj.accelerate(0,50);
+        //rootObj.accelerate(0,50);
         /*
 
         gamefield.getChildren().add(childObj2);

@@ -1,30 +1,25 @@
 package sample.physWorld.physObjects;
 
 
+import sample.physWorld.Kinematic;
 
 public class PhysLink {
     private PhysObject obj;
     private PhysLink to;
-    private double torsion  = 0;
-    private double forceX = 0;
-    private double forceY = 0;
-    private double distance;
-    private double angle;
+    private double torsion = 0;
+    private Kinematic kinematic = new Kinematic();
 
-    public PhysLink(PhysObject obj, double distance , double angle)
-    {
+    public PhysLink(PhysObject obj, double x, double y) {
         this.obj = obj;
-        this.distance = distance;
-        this.angle = angle;
+        kinematic.setX(x);
+        kinematic.setY(y);
     }
 
-    public void addForceX(double forceX)
-    {
+    public void addForceX(double forceX) {
         this.forceX += forceX;
     }
 
-    public void addForceY(double forceY)
-    {
+    public void addForceY(double forceY) {
         this.forceY += forceY;
     }
 
@@ -68,19 +63,13 @@ public class PhysLink {
         this.forceY = forceY;
     }
 
-    public double getDistance() {
-        return distance;
+    public Kinematic getKinematic() {
+        return kinematic;
     }
 
-    public void setDistance(double distance) {
-        this.distance = distance;
-    }
-
-    public double getAngle() {
-        return angle;
-    }
-
-    public void setAngle(double angle) {
-        this.angle = angle;
+    public void setKinematic(Kinematic kinematic) {
+        this.kinematic = kinematic;
     }
 }
+
+

@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import sample.Settings;
-import sample.physWorld.Vector;
+import sample.physWorld.Kinematic;
 
 import java.util.ArrayList;
 
@@ -18,13 +18,13 @@ public class Node extends Region {
     Node parent;
     boolean isParent = false;
 
-    private Vector vector = new Vector();
+    private Kinematic kinematic = new Kinematic();
 
     public Node(int x, int y)
     {
 
-        vector.setX(x);
-        vector.setY(y);
+        kinematic.getOrigin().
+        kinematic.setY(y);
         super.relocate(x, y);
         redraw();
     }
@@ -54,26 +54,26 @@ public class Node extends Region {
 
     @Override
     public void relocate(double x, double y) {
-        vector.setX(x);
-        vector.setY(y);
+        kinematic.setX(x);
+        kinematic.setY(y);
         super.relocate(x, y);
     }
 
     public void moveBy(double x, double y)
     {
-        relocate(vector.getX()+x,vector.getY()+y);
+        relocate(kinematic.getX()+x, kinematic.getY()+y);
     }
 
     public void updateLocationWithoutCollision()
     {
-        moveBy(vector.getdX(),vector.getdY());
+        moveBy(kinematic.getdX(), kinematic.getdY());
     }
 
 
     public double distanceToNode(Node node)
     {
-        double dx = vector.getX()-node.getVector().getX();
-        double dy = vector.getY()-node.getVector().getY();
+        double dx = kinematic.getX()-node.getKinematic().getX();
+        double dy = kinematic.getY()-node.getKinematic().getY();
 
         double distance = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
 
@@ -147,12 +147,12 @@ public class Node extends Region {
         redraw();
     }
 
-    public Vector getVector() {
-        return vector;
+    public Kinematic getKinematic() {
+        return kinematic;
     }
 
-    public void setVector(Vector vector) {
-        this.vector = vector;
+    public void setKinematic(Kinematic kinematic) {
+        this.kinematic = kinematic;
     }
 
 

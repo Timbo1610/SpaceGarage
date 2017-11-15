@@ -2,13 +2,16 @@ package sample.physWorld.physObjects;
 
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Circle;
+import sample.physWorld.Kinematic;
 import sample.physWorld.PID;
 import sample.physWorld.Vector;
 
+import java.util.ArrayList;
+
 public class PhysObject extends Region{
 
-    private Vector vector = new Vector();
-    private Vector nextVector = new Vector();
+    private Kinematic kinematic = new Kinematic();
+    private Kinematic nextKinematic = new Kinematic();
     private double rotation = 0;
     private int diameter = 10;
     private double mass = 100;
@@ -31,7 +34,7 @@ public class PhysObject extends Region{
     //  3 | 2 | 1
     //  4 | X | 0
     //  5 | 6 | 7
-    private PhysLink[] links = new PhysLink[8];
+    private ArrayList<PhysLink> links = new ArrayList<>();
 
     private Circle circle = new Circle(diameter);
 
@@ -44,79 +47,46 @@ public class PhysObject extends Region{
         pid.setOutputLimits(1);
 
 
-        vector.setX(x);
-        vector.setY(y);
-
         calcNextVector();
+        kinematic.getOrigin().setX(x);
+        kinematic.getOrigin().setY(y);
 
-        super.relocate(vector.getdX(), vector.getdY());
+        super.relocate(x,y);
 
         getChildren().add(circle);
     }
 
-    public boolean addNeighbour(PhysObject childObj, int pos, double dist)
+    //    090°
+    //180°    009°
+    //    270°
+    public boolean addNeighbour(PhysObject childObj, int degree, double dist)
     {
-        if(links[pos] == null)
-        {
-            double angle = 360/8 * pos;
-
-            PhysLink link = new PhysLink(this,dist,angle);
-            PhysLink link2 = new PhysLink(childObj,dist,angle+180);
-
-            link.setTo(link2);
-            link2.setTo(link);
-
-            connectLink(link,pos);
-
-            childObj.connectLink(link2,(pos + 4) % 8);
-
-            childObj.setRootObject(getRootObject());
-
-            childObj.relocate(vector.getX() + Math.cos(Math.toRadians(angle)) * dist,vector.getY() -  Math.sin(Math.toRadians(angle)) * dist);
-
-            return true;
-        }
-        else
-            return false;
-    }
-
-    public boolean connectLink(PhysLink link, int pos)
-    {
-        if(links[pos] == null) {
-            links[pos] = link;
-            return true;
-        }
-        else
-            return false;
+        //ToDo implement addNeighbour
+        return true;
     }
 
     @Override
     public void relocate(double x, double y) {
-        vector.setX(x);
-        vector.setY(y);
+        kinematic.getOrigin().setX(x);
+        kinematic.getOrigin().setY(y);
         calcNextVector();
         super.relocate(x, y);
     }
 
     public double distanceToNode(PhysObject object)
     {
-        double dx = vector.getX()-object.getVector().getX();
-        double dy = vector.getY()-object.getVector().getY();
-
-        double distance = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
-
-        return  distance;
+        return  kinematic.getOrigin().getDistanceToVector(object.getKinematic().getOrigin());
     }
 
     public boolean willCollide(PhysObject otherObject) {
-            return otherObject.getNextVector().distanceToVector(nextVector) < otherObject.diameter + diameter;
+            return otherObject.getNextKinematic().getOrigin().getDistanceToVector(nextKinematic.getOrigin()) < otherObject.diameter + diameter;
     }
 
     private void updateVector()
     {
-        vector.moveBy(vector.getdX(), vector.getdY());
+        kinematic.moveBy(kinematic.getSpeed());
         calcNextVector();
-        relocate(vector.getX(), vector.getY());
+        relocate(kinematic.getSpeed().getX(), kinematic.getSpeed().getY());
     }
 
     private void updateLinks()
@@ -126,68 +96,11 @@ public class PhysObject extends Region{
             if(link != null)
             {
                 PhysObject otherNode = link.getTo().getObj();
-                double dx = vector.getX()-otherNode.getVector().getX() + Math.cos(Math.toRadians(link.getAngle())) * link.getDistance()*2;
-                double dy = vector.getY()-otherNode.getVector().getY() + Math.sin(Math.toRadians(link.getAngle())) * link.getDistance()*2;
+               // double dx = kinematic.getX()-otherNode.getKinematic().getX() + Math.cos(Math.toRadians(link.getAngle())) * link.getDistance()*2;
+               // double dy = kinematic.getY()-otherNode.getKinematic().getY() + Math.sin(Math.toRadians(link.getAngle())) * link.getDistance()*2;
 
-                double dvelX = vector.getdX() - otherNode.getVector().getdX();
-                double dvelY = vector.getdY() - otherNode.getVector().getdY();
-
-                if(Math.abs(dvelX) > Math.abs(oldvelDX))
-                    accelerate(dvelX /stiffness,0);
-
-                if(Math.abs(dvelY) > Math.abs(oldvelDY))
-                    accelerate(0,dvelY /stiffness);
-
-
-
-
-                vector.setdX(vector.getdX() - dvelX);
-                vector.setdY(vector.getdY() - dvelY);
-
-
-
-
-
-
-
-
-                //if(this.getClass().equals(ChildObject.class))
-                   // accelerate(link.getForceX()/ mass,link.getForceY() / mass);
-
-                //link.setForceX(stiffness * - dx);
-                //link.setForceY(stiffness * - dy);
-
-                //link.addForceX(-Math.pow(dvelX,3) - stiffness * dx);
-                //link.addForceY(-Math.pow(dvelY,3) - stiffness * dy);
-
-                //if(Math.abs(dx) < deadzone)
-                 //   link.setForceX(0);
-                //if(Math.abs(dx) < deadzone)
-                //    link.setForceY(0);
-
-
-                //
-                //{
-                    //v(pid.getOutput(dx, Math.cos(Math.toRadians(link.getAngle())) * link.getDistance()*2)/mass,
-                     //       pid.getOutput(dy, Math.sin(Math.toRadians(link.getAngle())) * link.getDistance()*2)/mass);
-                //}
-
-
-                oldDX = dx;
-                oldDY = dy;
-                oldvelDX = dvelX;
-                oldvelDY = dvelY;
-
-
-
-                //System.out.println(toString() + "  dx: " + dx + " dy: " + dy + " Fx: " +  link.getForceX() + " Fy: " +  link.getForceY());
-
-                link.setForceX(link.getForceX() / dampening);
-                link.setForceY(link.getForceY() / dampening);
-
-
-
-
+               // double dvelX = kinematic.getdX() - otherNode.getKinematic().getdX();
+               // double dvelY = kinematic.getdY() - otherNode.getKinematic().getdY();
 
             }
         }
@@ -217,28 +130,27 @@ public class PhysObject extends Region{
 
     public void calcNextVector()
     {
-        nextVector.setX(vector.getX() + vector.getdX());
-        nextVector.setY(vector.getY() + vector.getdY());
+
+        nextKinematic.getOrigin().setX(kinematic.getOrigin().getX() + kinematic.getSpeed().getX());
+        nextKinematic.getOrigin().setY(kinematic.getOrigin().getY() + kinematic.getSpeed().getY());
     }
 
-    public void accelerate(double x, double y)
+    public void applyForce(Vector force)
     {
-        vector.setdX(vector.getdX() + x);
-        vector.setdY(vector.getdY() + y);
+        kinematic.getForce().addVector(force);
     }
 
     public void applyDrag(double drag)
     {
-        vector.setdX(vector.getdX()/drag);
-        vector.setdY(vector.getdY()/drag);
+       kinematic.getSpeed().multiplayBySkalar(drag);
     }
 
-    public Vector getVector() {
-        return vector;
+    public Kinematic getKinematic() {
+        return kinematic;
     }
 
-    public void setVector(Vector vector) {
-        this.vector = vector;
+    public void setKinematic(Kinematic kinematic) {
+        this.kinematic = kinematic;
     }
 
     public int getDiameter() {
@@ -250,12 +162,12 @@ public class PhysObject extends Region{
         circle.setRadius(diameter / 2);
     }
 
-    public Vector getNextVector() {
-        return nextVector;
+    public Kinematic getNextKinematic() {
+        return nextKinematic;
     }
 
-    public void setNextVector(Vector nextVector) {
-        this.nextVector = nextVector;
+    public void setNextKinematic(Kinematic nextKinematic) {
+        this.nextKinematic = nextKinematic;
     }
 
     public double getMass() {
@@ -290,11 +202,11 @@ public class PhysObject extends Region{
         this.rootObject = rootObject;
     }
 
-    public PhysLink[] getLinks() {
+    public ArrayList<PhysLink> getLinks() {
         return links;
     }
 
-    public void setLinks(PhysLink[] links) {
+    public void setLinks(ArrayList<PhysLink> links) {
         this.links = links;
     }
 

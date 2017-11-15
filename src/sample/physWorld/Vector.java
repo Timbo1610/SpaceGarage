@@ -1,79 +1,58 @@
 package sample.physWorld;
 
 public class Vector {
-    double[] origin = {0,0};
-    double[] direction ={0,0};
 
+    double x;
+    double y;
 
-    public Vector(){}
-
-    public Vector(double x , double y){
-        origin[0] = x;
-        origin[1] = y;
-    }
-
-    public Vector(double x , double y, double dx, double dy){
-        origin[0] = x;
-        origin[1] = y;
-
-        direction[0] = dx;
-        direction[1] = dy;
-    }
-
-    public void moveBy(double x, double y)
+    public Vector(double x, double y)
     {
-        setX(getX() + x);
-        setY(getY() + y);
+        this.x = x;
+        this.y = y;
     }
 
-    public double distanceToVector( Vector vector)
+    public Vector addVector(Vector vector)
     {
-        double dx = getX()-vector.getX();
-        double dy = getY()-vector.getY();
+        x = vector.getX();
+        y = vector.getY();
 
-        double distance = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
-
-        return  distance;
+        return this;
     }
 
-    public void setX(double x)
+    public void multiplayBySkalar(double skalar)
     {
-        origin[0] = x;
+        x =  x*skalar;
+        y =  y*skalar;
     }
 
-    public void setY(double y)
+    public double getLength()
     {
-        origin[1] = y;
+        return  Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
     }
 
-    public void setdX(double dx)
+    public double getDistanceToVector(Vector other)
     {
-        direction[0] = dx;
+        return clone().addVector(other).getLength();
     }
 
-    public void setdY(double dy)
+    public Vector clone()
     {
-        direction[1] = dy;
+        return new Vector(x,y);
     }
 
-    public double getX()
-    {
-        return origin[0];
+    public double getX() {
+        return x;
     }
 
-    public double getY()
-    {
-        return origin[1];
+    public void setX(double x) {
+        this.x = x;
     }
 
-    public double getdX()
-    {
-        return direction[0];
+    public double getY() {
+        return y;
     }
 
-    public double getdY()
-    {
-        return direction[1];
+    public void setY(double y) {
+        this.y = y;
     }
-
 }

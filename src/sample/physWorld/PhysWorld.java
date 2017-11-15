@@ -11,7 +11,7 @@ public class PhysWorld {
     boolean bounceEdges = true;
     boolean drag;
     double resitance;
-    Vector gravity;
+    Kinematic gravity;
 
     private ArrayList<ForceField> forceFields = new ArrayList<>();
     private ArrayList<PhysObject> physObjects = new ArrayList<>();

@@ -1,8 +1,8 @@
 package sample.physWorld.fields;
 
-import sample.physWorld.Vector;
+import sample.physWorld.Kinematic;
 
 public class DirectedForceField extends ForceField {
 
-    Vector vector = new Vector();
+    Kinematic kinematic = new Kinematic();
 }

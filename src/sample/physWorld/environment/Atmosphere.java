@@ -1,9 +1,9 @@
 package sample.physWorld.environment;
 
-import sample.physWorld.Vector;
+import sample.physWorld.Kinematic;
 
 public class Atmosphere {
     AtmosphereType type;
-    Vector location;
+    Kinematic location;
 
 }

@@ -38,13 +38,14 @@ public class CollisionDetecter {
     {
         for(PhysObject object: physObjects)
         {
-            if(object.getNextVector().getX()+object.getDiameter()/2 > PhysSettings.PHYS_WORLD_WIDTH ||
-                    object.getNextVector().getY()+ object.getDiameter()/2 > PhysSettings.PHYS_WORLD_HEIGHT ||
-                    object.getNextVector().getX()- object.getDiameter()/2 < 0 ||
-                    object.getNextVector().getY()- object.getDiameter()/2 < 0 )
+            if(
+                    object.getNextKinematic().getX()+object.getDiameter()/2 > PhysSettings.PHYS_WORLD_WIDTH ||
+                    object.getNextKinematic().getY()+ object.getDiameter()/2 > PhysSettings.PHYS_WORLD_HEIGHT ||
+                    object.getNextKinematic().getX()- object.getDiameter()/2 < 0 ||
+                    object.getNextKinematic().getY()- object.getDiameter()/2 < 0 )
             {
-                object.getVector().setdX(-object.getVector().getdX());
-                object.getVector().setdY(-object.getVector().getdY());
+                object.getKinematic().setdX(-object.getKinematic().getdX());
+                object.getKinematic().setdY(-object.getKinematic().getdY());
             }
         }
 

@@ -209,7 +209,7 @@ public class PID {
         }
 
         /**
-         * Set the operating direction of the PID controller
+         * Set the operating speed of the PID controller
          * @param reversed Set true to reverse PID output
          */
         public void  setDirection(boolean reversed){
